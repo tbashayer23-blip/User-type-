@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>اختاري ملف المستخدم</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Tahoma,Arial,sans-serif;background:linear-gradient(135deg,#eef7f5,#fff8ee);color:#243c3a}
+.wrap{max-width:980px;margin:auto;padding:18px}
+.teacher{text-align:center;color:#476f6a;font-weight:800;margin-bottom:10px}
+.panel{background:#fff;border:1px solid #dfe9e7;border-radius:26px;padding:24px;box-shadow:0 14px 36px #4a6a6417;margin-bottom:18px}
+h1,h2{text-align:center;color:#285f59}
+.sub{text-align:center;color:#657b78;line-height:1.9}
+.hide{display:none!important}
+.primary{border:0;background:#347c73;color:#fff;border-radius:14px;padding:13px 22px;font-weight:800;cursor:pointer}
+.secondary{border:2px solid #cfe1de;background:#fff;color:#316862;border-radius:13px;padding:11px 16px;font-weight:800;cursor:pointer}
+.users{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:20px}
+.user{border:2px solid #d6e5e2;border-radius:20px;background:#fbfefd;padding:18px 12px;text-align:center;cursor:pointer;transition:.2s}
+.user:hover{transform:translateY(-3px);box-shadow:0 10px 20px #54736b18}
+.avatar{width:72px;height:72px;border-radius:50%;margin:auto auto 10px;display:flex;align-items:center;justify-content:center;font-size:34px;background:#edf7f5}
+.user b{display:block;color:#315f5a;line-height:1.5}
+.modalBack{position:fixed;inset:0;background:#0007;display:flex;align-items:center;justify-content:center;padding:18px;z-index:20}
+.modal{max-width:520px;width:100%;background:white;border-radius:24px;padding:22px;box-shadow:0 18px 50px #0003}
+.modal h3{margin-top:0;color:#2b675f}
+.modal p{line-height:1.9}
+.inbox{background:#f8fbfa;border:2px solid #d8e5e2;border-radius:20px;padding:18px}
+.ticket{background:#fff;border-radius:16px;padding:18px;line-height:1.9;font-weight:800;min-height:130px;display:flex;align-items:center;justify-content:center;text-align:center}
+.typeTag{display:inline-block;padding:7px 12px;border-radius:999px;background:#eaf5f2;color:#2c6a63;font-weight:800;margin-bottom:10px}
+.progress{height:10px;background:#e7efed;border-radius:20px;overflow:hidden;margin:14px 0 20px}
+.bar{height:100%;width:0;background:#4e9188;transition:.3s}
+.choiceUsers{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.choiceUsers button{border:2px solid #cfe1de;background:#fff;border-radius:15px;padding:14px;font-weight:800;color:#315c58;min-height:70px;cursor:pointer}
+.choiceUsers button:hover{background:#f1f9f7}
+.feedback{min-height:60px;padding:12px;text-align:center;font-weight:800;line-height:1.8}
+.good{color:#17745f}.bad{color:#a65345}
+.binary{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+.binary button{min-height:76px;border-radius:16px;border:2px solid #d7e3e0;background:white;font-weight:800;cursor:pointer}
+.clues{display:grid;gap:8px;margin-top:12px}
+.clue{background:#f7fbfa;border-right:5px solid #6ba399;border-radius:12px;padding:12px;line-height:1.7}
+.badge{border:3px solid #d7b56d;border-radius:24px;padding:24px;background:linear-gradient(145deg,#fffdf7,#fff8e8);max-width:520px;margin:20px auto}
+.badge .big{font-size:48px}
+.score{font-size:44px;font-weight:900;color:#347c73}
+.top{display:flex;justify-content:space-between;gap:10px;font-weight:800;color:#58736f}
+@media(max-width:760px){.users{grid-template-columns:1fr 1fr}.choiceUsers,.binary{grid-template-columns:1fr}.wrap{padding:10px}.panel{padding:16px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="teacher">إعداد المعلمة: بشاير الحربي</div>
+
+<section id="home" class="panel">
+<h1>💻 اختاري ملف المستخدم</h1>
+<p class="sub">أمامك أربعة ملفات مستخدمين في ويندوز. افتحي كل ملف لتتعرفي على هويته وصلاحياته، ثم استلمي طلبات قسم الدعم التقني.</p>
+<div class="users">
+ <button class="user" data-profile="0"><div class="avatar">👑</div><b>المسؤول المدمج</b></button>
+ <button class="user" data-profile="1"><div class="avatar">🛠️</div><b>مستخدم بامتيازات إدارية</b></button>
+ <button class="user" data-profile="2"><div class="avatar">☁️</div><b>حساب مايكروسوفت</b></button>
+ <button class="user" data-profile="3"><div class="avatar">💻</div><b>الحساب المحلي</b></button>
+</div>
+<p class="sub" style="margin-top:18px">💡 افتحي الملفات الأربعة أولًا، ثم ابدئي المهمة.</p>
+<div style="text-align:center"><button class="primary" id="begin">📩 افتحي صندوق طلبات الدعم</button></div>
+</section>
+
+<section id="game" class="panel hide">
+<div class="top"><span id="stepLabel"></span><span>📩 قسم الدعم التقني</span></div>
+<div class="progress"><div id="bar" class="bar"></div></div>
+<div class="inbox">
+ <div id="typeTag" class="typeTag"></div>
+ <div id="ticket" class="ticket"></div>
+ <div id="interaction"></div>
+</div>
+<div id="feedback" class="feedback"></div>
+<div style="text-align:center"><button id="next" class="primary hide">الطلب التالي ←</button></div>
+</section>
+
+<section id="result" class="panel hide">
+<h1>🔐 تم إغلاق صندوق الطلبات</h1>
+<div class="badge">
+ <div class="big">🏅</div>
+ <h2>بطاقة اعتماد</h2>
+ <p class="sub">مديرة حسابات مستخدمين</p>
+ <div id="score" class="score"></div>
+ <p id="rank" class="sub"></p>
+</div>
+<div style="text-align:center"><button id="restart" class="primary">🔁 أعيدي المهمة</button></div>
+</section>
+</div>
+
+<div id="modalBack" class="modalBack hide">
+ <div class="modal">
+  <h3 id="modalTitle"></h3>
+  <p id="modalText"></p>
+  <div style="text-align:center"><button id="closeModal" class="primary">تم ✓</button></div>
+ </div>
+</div>
+
+<script>
+const profiles=[
+ {name:"👑 حساب المسؤول المدمج",text:"يُستخدم عند تصنيع أجهزة الحاسب لتشغيل البرامج والتطبيقات قبل إنشاء حساب المستخدم، ويتمتع بجميع الامتيازات ويمكنه التحكم بجميع إعدادات الحاسب، مثل تغيير إعدادات التكوين وتنزيل البرامج."},
+ {name:"🛠️ حساب المستخدم بامتيازات إدارية",text:"يمتلك امتيازات لأداء معظم الوظائف داخل نظام التشغيل، مثل تثبيت البرامج وبرامج تشغيل الأجهزة، وتغيير إعدادات النظام، وتثبيت تحديثاته، وإنشاء حسابات مستخدمين وتغيير كلمات مرورهم."},
+ {name:"☁️ حساب مايكروسوفت",text:"يسمح للمستخدم بالوصول إلى إعداداته وملفاته ومراجعه عبر أجهزة متعددة، والوصول إلى خدمات مايكروسوفت مثل OneDrive وOffice 365."},
+ {name:"💻 الحساب المحلي",text:"يُنشأ على جهاز محدد وغير متصل بأي خدمة عبر الإنترنت. تُخزن بياناته محليًا ولا تتم مزامنة إعداداته وملفاته وتفضيلاته مع جهاز آخر أو تخزينها سحابيًا."}
+];
+
+const labels=profiles.map(p=>p.name);
+
+const rounds=[
+ {type:"assign",tag:"📩 طلب وارد",q:"أحتاج إلى الوصول إلى ملفاتي وإعداداتي عبر أكثر من جهاز، وأستخدم OneDrive باستمرار.",a:2,why:"هذا يناسب حساب مايكروسوفت لأنه يدعم الوصول عبر أجهزة متعددة وخدمات Microsoft."},
+ {type:"who",tag:"🔎 من أنا؟",q:"أمتلك جميع الامتيازات، وأُستخدم قبل إنشاء حساب المستخدم أثناء تجهيز الحاسب.",clues:["جميع الامتيازات","التحكم بجميع إعدادات الحاسب","يُستخدم عند تصنيع الجهاز"],a:0,why:"هذه صفات حساب المسؤول المدمج."},
+ {type:"check",tag:"🚨 اكتشفي الحساب الخطأ",q:"تم اختيار «حساب مايكروسوفت» لمستخدمة تريد حسابًا محفوظًا على جهاز واحد فقط دون مزامنة سحابية. هل الاختيار مناسب؟",a:0,why:"لا، الأنسب هو الحساب المحلي؛ لأنه يُنشأ على جهاز محدد ولا تتم مزامنة ملفاته وإعداداته سحابيًا."},
+ {type:"assign",tag:"📩 طلب وارد",q:"أريد حسابًا على هذا الجهاز فقط، بلا مزامنة سحابية ولا ربط بخدمة عبر الإنترنت.",a:3,why:"الحساب المحلي يُنشأ على جهاز محدد ولا تتم مزامنته سحابيًا."},
+ {type:"who",tag:"🔎 من أنا؟",q:"أرتبط بخدمات مايكروسوفت وأساعدك على استخدام إعداداتك وملفاتك عبر أجهزة متعددة.",clues:["أجهزة متعددة","خدمات مايكروسوفت","مزامنة الإعدادات والملفات"],a:2,why:"هذه صفات حساب مايكروسوفت."},
+ {type:"check",tag:"🚨 اكتشفي الحساب الخطأ",q:"تم اختيار «الحساب المحلي» لمستخدمة تريد مراجعة إعداداتها وملفاتها من أكثر من جهاز. هل الاختيار مناسب؟",a:0,why:"لا، الأنسب حساب مايكروسوفت لأن الحساب المحلي لا يزامن البيانات بين الأجهزة."},
+ {type:"assign",tag:"📩 طلب وارد",q:"أثناء تجهيز جهاز في المصنع نحتاج تشغيل البرامج والتطبيقات قبل إنشاء حساب المستخدم، مع التحكم الكامل بالإعدادات.",a:0,why:"هذه مهمة حساب المسؤول المدمج."},
+ {type:"who",tag:"🔎 من أنا؟",q:"بياناتي تبقى على محرك الأقراص في هذا الجهاز، ولا تتم مزامنتها مع جهاز آخر.",clues:["جهاز محدد","تخزين محلي","لا مزامنة سحابية"],a:3,why:"هذه صفات الحساب المحلي."},
+ {type:"check",tag:"🚨 اكتشفي الحساب الخطأ",q:"تم اختيار «حساب مايكروسوفت» لمستخدمة تريد الوصول إلى OneDrive وOffice 365 من أجهزة متعددة. هل الاختيار مناسب؟",a:1,why:"نعم، هذا هو الاستخدام المناسب لحساب مايكروسوفت."},
+ {type:"assign",tag:"📩 طلب وارد",q:"أحتاج حساب مستخدم يسمح لي بتثبيت البرامج وتحديثات النظام وإنشاء حسابات مستخدمين وتغيير كلمات مرورهم. فما الحساب المناسب؟",a:1,why:"هذه من صلاحيات حساب المستخدم بامتيازات إدارية."},
+ {type:"who",tag:"🔎 من أنا؟",q:"أساعد المستخدم على الوصول إلى ملفاته وإعداداته عبر أجهزة متعددة وخدمات مايكروسوفت.",clues:["أجهزة متعددة","OneDrive","Office 365"],a:2,why:"هذا هو حساب مايكروسوفت."},
+ {type:"check",tag:"🚨 اكتشفي الحساب الخطأ",q:"تم إسناد التحكم الكامل بجميع إعدادات الحاسب أثناء التصنيع إلى «حساب المسؤول المدمج». هل الاختيار مناسب؟",a:1,why:"نعم، حساب المسؤول المدمج يتمتع بجميع الامتيازات."}
+];
+
+let i=0,score=0,answered=false,opened=new Set();
+
+const $=id=>document.getElementById(id);
+
+function showProfile(idx){
+ opened.add(idx);
+ $("modalTitle").textContent=profiles[idx].name;
+ $("modalText").textContent=profiles[idx].text;
+ $("modalBack").classList.remove("hide");
+}
+
+function startGame(){
+ $("home").classList.add("hide");
+ $("game").classList.remove("hide");
+ i=0;score=0;render();
+}
+
+function render(){
+ answered=false;
+ $("feedback").innerHTML="";
+ $("next").classList.add("hide");
+ const r=rounds[i];
+ $("stepLabel").textContent=`المهمة ${i+1} من ${rounds.length}`;
+ $("bar").style.width=(i/rounds.length*100)+"%";
+ $("typeTag").textContent=r.tag;
+ $("ticket").textContent=r.q;
+ const box=$("interaction");
+
+ if(r.type==="assign"){
+   box.innerHTML='<div class="choiceUsers">'+labels.map((x,k)=>`<button data-answer="${k}">${x}</button>`).join("")+'</div>';
+ }else if(r.type==="who"){
+   box.innerHTML='<div class="clues">'+r.clues.map(c=>`<div class="clue">• ${c}</div>`).join("")+'</div><div class="choiceUsers">'+labels.map((x,k)=>`<button data-answer="${k}">${x}</button>`).join("")+'</div>';
+ }else{
+   box.innerHTML='<div class="binary"><button data-check="1">✅ نعم، الاختيار مناسب</button><button data-check="0">❌ لا، الاختيار غير مناسب</button></div>';
+ }
+}
+
+function evaluate(val){
+ if(answered)return;
+ const r=rounds[i];
+ const correct = val===r.a;
+ if(correct){
+   answered=true;score++;
+   $("feedback").innerHTML=`<span class="good">✅ قرار صحيح<br>${r.why}</span>`;
+   document.querySelectorAll("#interaction button").forEach(b=>b.disabled=true);
+   $("next").classList.remove("hide");
+ }else{
+   $("feedback").innerHTML='<span class="bad">🔎 راجعي خصائص الحساب ثم حاولي مرة أخرى.</span>';
+ }
+}
+
+function nextRound(){
+ i++;
+ if(i<rounds.length)render(); else finish();
+}
+
+function finish(){
+ $("game").classList.add("hide");
+ $("result").classList.remove("hide");
+ $("score").textContent=`${score} / ${rounds.length}`;
+ $("rank").textContent=score===rounds.length?"اعتماد كامل ⭐ أتقنتِ التمييز بين الحسابات الأربعة.":score>=9?"أداء قوي جدًا 👏 بقيت تفاصيل بسيطة فقط.":"بداية جيدة 🌱 أعيدي المهمة بعد مراجعة ملفات المستخدمين.";
+}
+
+document.addEventListener("click",e=>{
+ const p=e.target.closest("[data-profile]");
+ if(p)showProfile(Number(p.dataset.profile));
+ if(e.target.closest("#closeModal"))$("modalBack").classList.add("hide");
+ if(e.target.closest("#begin"))startGame();
+
+ const a=e.target.closest("[data-answer]");
+ if(a)evaluate(Number(a.dataset.answer));
+
+ const c=e.target.closest("[data-check]");
+ if(c)evaluate(Number(c.dataset.check));
+
+ if(e.target.closest("#next"))nextRound();
+ if(e.target.closest("#restart"))location.reload();
+});
+</script>
+</body>
+</html>
